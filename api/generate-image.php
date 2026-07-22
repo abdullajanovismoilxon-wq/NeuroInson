@@ -198,6 +198,12 @@ try {
     $today = date("Y-m-d");
     $db->prepare("UPDATE users SET extra_prompt_limits = CASE WHEN last_prompt_date = ? THEN extra_prompt_limits + 2 ELSE 2 END, last_prompt_date = ? WHERE telegram_id = ?")
        ->execute([$today, $today, $telegram_id]);
+
+    $tariffLabel = isset($data['tariff']) ? $data['tariff'] : $model_name;
+    $stmt_m = $db->prepare("INSERT INTO generated_media (telegram_id, media_type, file_path, tariff_label, price) VALUES (?, 'image', ?, ?, ?)");
+    $stmt_m->execute([$telegram_id, "output/" . $filename, $tariffLabel, $price]);
+    $media_id = (int)$db->lastInsertId();
+
     $db->commit();
 
     // Re-fetch balance for accurate display
@@ -216,7 +222,8 @@ try {
 
     echo json_encode([
         "status"      => "success",
-        "image_url"   => "output/" . $filename,
+        "image_url"   => "api/media.php?id=" . $media_id . "&telegram_id=" . $telegram_id,
+        "media_id"    => $media_id,
         "model"       => $model_name,
         "new_balance" => $new_balance
     ]);

@@ -95,6 +95,17 @@ def init_db():
         )
     ''')
     conn.execute('''
+        CREATE TABLE IF NOT EXISTS generated_media (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            telegram_id INTEGER NOT NULL,
+            media_type TEXT NOT NULL,
+            file_path TEXT NOT NULL,
+            tariff_label TEXT,
+            price INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.execute('''
         CREATE TABLE IF NOT EXISTS transactions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             telegram_id INTEGER,
@@ -244,6 +255,88 @@ class LocalAPIHandler(http.server.SimpleHTTPRequestHandler):
                 "by_day": by_day,
                 "top_users": top_users
             })
+        # ── Secure Media Streaming ──
+        elif path.startswith("/api/media.php"):
+            parsed = urllib.parse.urlparse(self.path)
+            qs = urllib.parse.parse_qs(parsed.query)
+            media_id = int(qs.get('id', [0])[0])
+            req_telegram_id = int(qs.get('telegram_id', [0])[0])
+
+            if media_id <= 0:
+                self.send_error_json("Media ID talab qilinadi.", 400)
+                return
+
+            conn = get_db()
+            cursor = conn.cursor()
+            cursor.execute("SELECT telegram_id, media_type, file_path FROM generated_media WHERE id=?", (media_id,))
+            row = cursor.fetchone()
+            conn.close()
+
+            if not row:
+                self.send_error_json("Fayl topilmadi.", 404)
+                return
+
+            owner_id, media_type, file_path = row
+            admin_ids = config.get("ADMIN_IDS", [799317334, 759065470570])
+
+            if req_telegram_id != owner_id and req_telegram_id not in admin_ids:
+                self.send_error_json("Ruxsat etilmadi. Fayl faqat egasiga ko'rinadi.", 403)
+                return
+
+            clean_p = file_path.lstrip('/')
+            full_p = os.path.join(os.path.dirname(__file__), clean_p)
+
+            if not os.path.isfile(full_p):
+                self.send_error_json("Fayl diskda topilmadi.", 404)
+                return
+
+            ext = os.path.splitext(full_p)[1].lower()
+            content_type = "image/jpeg"
+            if ext in ['.png', '.jpg', '.jpeg', '.webp']:
+                content_type = f"image/{ext.replace('.', '')}"
+            elif ext in ['.mp4', '.webm']:
+                content_type = f"video/{ext.replace('.', '')}"
+
+            with open(full_p, "rb") as f:
+                content = f.read()
+
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "private, max-age=86400")
+            self.end_headers()
+            self.wfile.write(content)
+            return
+
+        # ── User Specific Gallery ──
+        elif path.startswith("/api/get-my-gallery.php"):
+            parsed = urllib.parse.urlparse(self.path)
+            qs = urllib.parse.parse_qs(parsed.query)
+            telegram_id = int(qs.get('telegram_id', [0])[0])
+
+            if not telegram_id:
+                self.send_json({"status": "error", "error": "telegram_id required", "media": []})
+                return
+
+            conn = get_db()
+            cursor = conn.cursor()
+            cursor.execute("SELECT id, media_type, file_path, tariff_label, price, created_at FROM generated_media WHERE telegram_id=? ORDER BY created_at DESC LIMIT 30", (telegram_id,))
+            rows = cursor.fetchall()
+            conn.close()
+
+            media_list = []
+            for r in rows:
+                media_list.append({
+                    "id": r[0],
+                    "media_type": r[1],
+                    "file_url": f"api/media.php?id={r[0]}&telegram_id={telegram_id}",
+                    "tariff_label": r[3],
+                    "price": r[4],
+                    "created_at": r[5]
+                })
+
+            self.send_json({"status": "success", "media": media_list})
             return
 
         # ── Admin Stats ──

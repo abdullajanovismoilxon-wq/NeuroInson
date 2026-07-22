@@ -104,7 +104,19 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 
+    $db->exec("CREATE TABLE IF NOT EXISTS generated_media (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        telegram_id INTEGER NOT NULL,
+        media_type TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        tariff_label TEXT,
+        price INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (telegram_id) REFERENCES users(telegram_id)
+    )");
+
     $db->exec("CREATE INDEX IF NOT EXISTS idx_transactions_user ON transactions(telegram_id, created_at)");
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_generated_media_user ON generated_media(telegram_id, created_at)");
     $db->exec("CREATE INDEX IF NOT EXISTS idx_topups_status ON pending_topups(status, created_at)");
     $db->exec("CREATE INDEX IF NOT EXISTS idx_topups_user ON pending_topups(telegram_id, status)");
     $db->exec("CREATE INDEX IF NOT EXISTS idx_paid_pay_id ON paid_transactions(pay_id)");

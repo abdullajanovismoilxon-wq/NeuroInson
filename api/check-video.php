@@ -126,24 +126,56 @@ if ($status === 'completed') {
                         $db->prepare("INSERT OR IGNORE INTO processed_video_requests (request_id, telegram_id) VALUES (?, ?)")
                            ->execute([$request_id, $telegram_id]);
 
+                        // Download video locally for secure streaming
+                        $output_dir = __DIR__ . "/../output";
+                        if (!is_dir($output_dir)) mkdir($output_dir, 0755, true);
+                        $v_filename = "video_" . time() . "_" . rand(1000, 9999) . ".mp4";
+                        $v_local = $output_dir . "/" . $v_filename;
+                        
+                        $ch_dl = curl_init($video_url);
+                        curl_setopt_array($ch_dl, [
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_TIMEOUT => 60,
+                            CURLOPT_SSL_VERIFYPEER => false,
+                            CURLOPT_FOLLOWLOCATION => true
+                        ]);
+                        $v_content = curl_exec($ch_dl);
+                        curl_close($ch_dl);
+
+                        if ($v_content) {
+                            file_put_contents($v_local, $v_content);
+                            $saved_rel_path = "output/" . $v_filename;
+                        } else {
+                            $saved_rel_path = $video_url;
+                        }
+
+                        $stmt_m = $db->prepare("INSERT INTO generated_media (telegram_id, media_type, file_path, tariff_label, price) VALUES (?, 'video', ?, ?, ?)");
+                        $stmt_m->execute([$telegram_id, $saved_rel_path, $tier, $price]);
+                        $media_id = (int)$db->lastInsertId();
+
                         $stmt = $db->prepare("SELECT balance FROM users WHERE telegram_id = ?");
                         $stmt->execute([$telegram_id]);
                         $new_balance = (int)$stmt->fetchColumn();
                     } else {
                         $new_balance = $usr['balance'] ?? 0;
+                        $media_id = 0;
                     }
                     $db->commit();
                 } catch (Exception $e) {
                     $db->rollBack();
                     $new_balance = $usr['balance'] ?? 0;
+                    $media_id = 0;
                 }
             } else {
                 $new_balance = null;
+                $media_id = 0;
             }
+
+            $final_url = ($media_id > 0) ? ("api/media.php?id=" . $media_id . "&telegram_id=" . $telegram_id) : $video_url;
 
             echo json_encode([
                 "status"      => "done",
-                "video_url"   => $video_url,
+                "video_url"   => $final_url,
                 "new_balance" => $new_balance
             ]);
         } else {

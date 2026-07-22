@@ -784,6 +784,9 @@ function switchTab(tabId) {
         loadAdminStats();
         loadAdminUsage();
     }
+    if (tabId === 'image' || tabId === 'video') {
+        loadSavedGallery();
+    }
 }
 
 function toggleSidebar() {
@@ -1938,12 +1941,37 @@ async function sendBroadcast() {
     }
 }
 
+async function loadSavedGallery() {
+    if (IS_DEFAULT_USER()) return;
+    const gallery = document.getElementById('imageGallery');
+    if (!gallery) return;
+
+    try {
+        const res = await fetch(`api/get-my-gallery.php?telegram_id=${tgUser.id}`);
+        const data = await res.json();
+        if (data.status === "success" && Array.isArray(data.media)) {
+            if (data.media.length === 0) {
+                gallery.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; color:var(--text-tertiary); padding:30px;"><span style="font-size:32px;display:block;margin-bottom:8px;">🎨</span> Hozircha siz yaratgan rasmlar yoki videolar yo\'q</div>';
+                return;
+            }
+            gallery.innerHTML = data.media.map(m => {
+                const label = m.tariff_label || (m.media_type === 'video' ? 'Video' : 'Rasm');
+                return buildImageCard(m.file_url, label, m.price, m.media_type);
+            }).join('');
+            if (window.lucide) lucide.createIcons();
+        }
+    } catch (e) {
+        console.error("Gallery loading error:", e);
+    }
+}
+
 // Initialize user on load
 document.addEventListener("DOMContentLoaded", () => {
     fetchUser();
     loadChatHistory('antigravity');
     loadChatHistory('prompt');
     loadChatHistory('project-chat');
+    loadSavedGallery();
 });
 
 /* ── Pause aurora animation when tab hidden (battery saving) ── */
