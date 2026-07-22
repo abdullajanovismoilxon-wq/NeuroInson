@@ -1,13 +1,26 @@
+# Secret keys & API Tokens
 .env
 .env.*
 config.json
 api/config.json
+
+# Databases & SQLite files
 database.db
 *.db
-__pycache__/
-*.pyc
+*.sqlite
+*.sqlite3
+
+# Temporary & Output files
 output/
 generated_files/
 logs/
 *.log
+server_out.txt
+server_err.txt
+
+# Python & Node Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 node_modules/
