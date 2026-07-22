@@ -1,0 +1,17 @@
+# API papkasi uchun .htaccess
+# .db, .json, .py, .log fayllariga to'g'ridan-to'g'ri kirish taqiqlangan
+
+<Files "config.json">
+    Order deny,allow
+    Deny from all
+</Files>
+
+<Files "db.php">
+    # db.php faqat boshqa PHP fayllar tomonidan require_once orqali chaqirilishi kerak
+    # To'g'ridan-to'g'ri brauzer so'rovida faqat bo'sh Content-Type javob qaytaradi — bu OK
+</Files>
+
+<FilesMatch "\.(db|sqlite|sqlite3|log|bak|py|sh)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>

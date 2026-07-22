@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="uz" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neuroinson AI — Premium AI Platform</title>
+    <meta name="description" content="Neuroinson AI — Sun'iy intellekt yordamida rasm, video va matn yarating. Professional 2026 AI SaaS platformasi.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css?v=60">
+</head>
+<body>
+    <div class="aurora-bg" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+    <div class="bg-gradient-mesh"></div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <div class="app-layout" id="appLayout">
+        <header class="mobile-topbar">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menyu">
+                <i data-lucide="menu"></i>
+            </button>
+            <div class="mobile-brand">
+                <div class="mobile-logo-icon"><i data-lucide="brain" style="width:18px;height:18px;"></i></div>
+                <span class="mobile-brand-title">Neuroinson AI</span>
+            </div>
+            <div class="mobile-right-actions">
+                <button class="mobile-balance-pill" onclick="openTopupModal()">
+                    <i data-lucide="coins" style="width:14px;height:14px;"></i>
+                    <span id="userBalanceMobile">15,000 so'm</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <div class="brand-container">
+                    <div class="brand-logo-glow">
+                        <i data-lucide="brain" style="width:22px;height:22px;"></i>
+                    </div>
+                    <div class="brand-info">
+                        <h2>Neuroinson AI</h2>
+                        <span class="pro-tag"><i data-lucide="sparkles" style="width:10px;height:10px;"></i> PRO 2026</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" onclick="closeSidebar()" aria-label="Yopish">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-new-chat-box">
+                <button class="new-chat-btn" onclick="createNewChat()">
+                    <i data-lucide="plus" style="width:18px;height:18px;"></i>
+                    <span>Yangi suhbat</span>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="sidebar-section-header">BO'LIMLAR</div>
+                <button class="sidebar-nav-item active" onclick="switchTab('antigravity'); closeSidebarOnMobile()">
+                    <span class="active-indicator"></span>
+                    <i data-lucide="message-square"></i>
+                    <span>Neuroinson Chatbot</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="switchTab('projects'); closeSidebarOnMobile()">
+                    <span class="active-indicator"></span>
+                    <i data-lucide="layers"></i>
+                    <span>Loyihalar Markazi</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="switchTab('prompt'); closeSidebarOnMobile()">
+                    <span class="active-indicator"></span>
+                    <i data-lucide="brain-circuit"></i>
+                    <span>Prompt & Matn AI</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="switchTab('image'); closeSidebarOnMobile()">
+                    <span class="active-indicator"></span>
+                    <i data-lucide="image"></i>
+                    <span>Rasm Generatsiyasi</span>
+                </button>
+                <button class="sidebar-nav-item" onclick="switchTab('video'); closeSidebarOnMobile()">
+                    <span class="active-indicator"></span>
+                    <i data-lucide="video"></i>
+                    <span>Video Generatsiyasi</span>
+                </button>
+                <button class="sidebar-nav-item locked-tab" id="nav-project-chat" onclick="switchTab('project-chat'); closeSidebarOnMobile()">
+                    <span class="active-indicator"></span>
+                    <i data-lucide="lock"></i>
+                    <span>Loyiha Muharriri AI</span>
+                </button>
+                <button class="sidebar-nav-item admin-tab" id="nav-admin" onclick="switchTab('admin'); closeSidebarOnMobile()" style="display: none;">
+                    <span class="active-indicator"></span>
+                    <i data-lucide="shield"></i>
+                    <span>Admin Panel</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-history-section">
+                <div class="sidebar-section-header">SUHBATLAR TARIXI</div>
+                <div class="history-group">
+                    <div class="history-group-title">Bugun</div>
+                    <button class="history-item active" onclick="switchTab('antigravity'); closeSidebarOnMobile()">
+                        <i data-lucide="message-circle" style="width:16px;height:16px;"></i>
+                        <span>Neuroinson AI Chatbot</span>
+                    </button>
+                    <button class="history-item" onclick="switchTab('prompt'); closeSidebarOnMobile()">
+                        <i data-lucide="message-circle" style="width:16px;height:16px;"></i>
+                        <span>Prompt Yordamchisi</span>
+                    </button>
+                </div>
+                <div class="history-group">
+                    <div class="history-group-title">Oldingi 7 kun</div>
+                    <button class="history-item" onclick="switchTab('projects'); closeSidebarOnMobile()">
+                        <i data-lucide="folder-open" style="width:16px;height:16px;"></i>
+                        <span>Web App Loyihasi</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-balance-card" id="openTopupBtn" onclick="openTopupModal()">
+                    <div class="sidebar-balance-icon">
+                        <i data-lucide="coins" style="width:20px;height:20px;"></i>
+                    </div>
+                    <div class="sidebar-balance-meta">
+                        <span class="sidebar-balance-label">Hisobingiz</span>
+                        <span class="sidebar-balance-amount" id="userBalance">15,000 so'm</span>
+                    </div>
+                    <button class="add-funds-btn"><i data-lucide="plus" style="width:14px;height:14px;"></i></button>
+                </div>
+
+                <div class="sidebar-user-row">
+                    <div class="user-avatar-glow">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=student" alt="Avatar" id="userAvatar">
+                        <span class="online-status-dot"></span>
+                    </div>
+                    <div class="user-info-text">
+                        <h4 id="userName">Foydalanuvchi</h4>
+                        <span id="userUsername">@username</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="main-topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="Sidebar yopish/ochish">
+                        <i data-lucide="panel-left-close"></i>
+                    </button>
+                    <div class="topbar-chat-title">
+                        <h3 id="currentChatTitle">Neuroinson AI Chatbot</h3>
+                        <span class="model-badge"><i data-lucide="sparkles" style="width:10px;height:10px;"></i> Neuroinson 4.0 Turbo</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="theme-segmented-control topbar-theme-control">
+                        <button class="theme-btn active" id="tbThemeBtnLight" onclick="setTheme('light')" title="Kunduzgi rejim"><i data-lucide="sun" style="width:14px;height:14px;"></i></button>
+                        <button class="theme-btn" id="tbThemeBtnDark" onclick="setTheme('dark')" title="Tungi rejim"><i data-lucide="moon" style="width:14px;height:14px;"></i></button>
+                        <button class="theme-btn" id="tbThemeBtnNight" onclick="setTheme('night')" title="OLED rejim"><i data-lucide="sparkles" style="width:14px;height:14px;"></i></button>
+                    </div>
+                    <button class="topbar-balance-pill" id="topbarBalancePill" onclick="openTopupModal()" style="display:none;">
+                        <i data-lucide="coins" style="width:16px;height:16px;"></i>
+                        <span id="userBalanceTopbar">15,000 so'm</span>
+                    </button>
+                    <button class="header-icon-btn" id="topbarHistoryBtn" onclick="openHistoryModal()" title="Tranzaksiya tarixi" style="display:none;">
+                        <i data-lucide="clock-rewind" style="width:18px;height:18px;"></i>
+                    </button>
+                    <div class="topbar-user-info" id="topbarUserInfo">
+                        <span class="topbar-user-email" id="topbarUserEmail">Log in</span>
+                        <button class="topbar-user-logout" id="topbarLogoutBtn" onclick="logoutUser()" title="Chiqish" style="display:none;">
+                            <i data-lucide="log-out" style="width:14px;height:14px;"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <main class="content-area">
+                    <!-- TAB 1: Neuroinson AI Chatbot -->
+                    <section id="tab-antigravity" class="tab-content active">
+                        <div class="section-banner antigravity-banner">
+                            <div class="banner-badge"><i data-lucide="zap" style="width:12px;height:12px;"></i> Kunlik 10 ta Bepul</div>
+                            <h2>Neuroinson AI Chatbot</h2>
+                            <p>Neuroinson AI yordamchisi bilan tezkor, do'stona va bepul muloqot qiling.</p>
+                        </div>
+
+                        <div class="welcome-hero-box">
+                            <div class="hero-icon-wrapper">
+                                <i data-lucide="brain" style="width:32px;height:32px;"></i>
+                            </div>
+                            <h2>Bugun sizga qanday yordam bera olaman?</h2>
+                            <p>Neuroinson 4.0 — Dasturlash, matnlar tahriri, rasm va video yaratish uchun professional sun'iy intellekt platformasi.</p>
+
+                            <div class="quick-cards-grid">
+                                <div class="quick-prompt-card" onclick="useQuickPrompt('antigravity', 'Menga bugungi kunda eng talabgir bo\'lgan 5 ta IT kasbini va ularni o\'rganish rejasini ber')">
+                                    <div class="quick-card-header">
+                                        <div class="quick-card-icon blue"><i data-lucide="code" style="width:18px;height:18px;"></i></div>
+                                        <i data-lucide="arrow-up-right" class="card-arrow" style="width:14px;height:14px;"></i>
+                                    </div>
+                                    <h4 class="quick-card-title">Dasturlash yo'nalishlari</h4>
+                                    <p class="quick-card-desc">IT va dasturlash sohasida 5 ta eng daromadli kasb</p>
+                                </div>
+
+                                <div class="quick-prompt-card" onclick="useQuickPrompt('antigravity', 'Python va JavaScript o\'rtasidagi asosiy farqlarni tushuntirib ber')">
+                                    <div class="quick-card-header">
+                                        <div class="quick-card-icon indigo"><i data-lucide="monitor" style="width:18px;height:18px;"></i></div>
+                                        <i data-lucide="arrow-up-right" class="card-arrow" style="width:14px;height:14px;"></i>
+                                    </div>
+                                    <h4 class="quick-card-title">Python vs JavaScript</h4>
+                                    <p class="quick-card-desc">Dasturlash tillari solishtiruvi va afzalliklari</p>
+                                </div>
+
+                                <div class="quick-prompt-card" onclick="useQuickPrompt('prompt', 'Flux AI uchun ultra-realistik 8k fotostudiya portreti promptini tuzib ber')">
+                                    <div class="quick-card-header">
+                                        <div class="quick-card-icon rose"><i data-lucide="sparkles" style="width:18px;height:18px;"></i></div>
+                                        <i data-lucide="arrow-up-right" class="card-arrow" style="width:14px;height:14px;"></i>
+                                    </div>
+                                    <h4 class="quick-card-title">Rasm Prompt Yaratish</h4>
+                                    <p class="quick-card-desc">Fotorealistik 8K rasm uchun mukammal prompt</p>
+                                </div>
+
+                                <div class="quick-prompt-card" onclick="useQuickPrompt('antigravity', 'Insho va ilmiy maqolalar yozishda e\'tibor berish kerak bo\'lgan 5 ta oltin qoida')">
+                                    <div class="quick-card-header">
+                                        <div class="quick-card-icon green"><i data-lucide="pen" style="width:18px;height:18px;"></i></div>
+                                        <i data-lucide="arrow-up-right" class="card-arrow" style="width:14px;height:14px;"></i>
+                                    </div>
+                                    <h4 class="quick-card-title">Insho va Maqolalar</h4>
+                                    <p class="quick-card-desc">Akademik matn va insholar tahriri</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-box" id="antigravityChat">
+                            <div class="message bot-message">
+                                <div class="msg-avatar"><i data-lucide="bot" style="width:16px;height:16px;"></i></div>
+                                <div class="msg-content">
+                                    <p>Salom! Men Neuroinson AI loyihasining rasmiy yordamchi chatbotiman. Platformamiz yoki loyihalarimiz haqida qanday yordam bera olaman?</p>
+                                    <span class="msg-time">Hozir</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-wrapper floating-input-wrapper">
+                            <button class="input-action-btn" title="Fayl biriktirish" onclick="showToast('Fayl yuklash funksiyasi tez orada qo\'shiladi', 'info')"><i data-lucide="paperclip" style="width:18px;height:18px;"></i></button>
+                            <textarea id="antigravityInput" placeholder="Savolingizni yoki topshiriqni yozing..." onkeydown="handleKeyPress(event, 'antigravity')" rows="1"></textarea>
+                            <button class="send-btn" onclick="sendMessage('antigravity')"><i data-lucide="arrow-up" style="width:18px;height:18px;"></i></button>
+                        </div>
+                    </section>
+
+                    <!-- TAB 2: Loyihalar (Projects) -->
+                    <section id="tab-projects" class="tab-content">
+                        <div class="section-banner projects-banner">
+                            <div class="banner-badge"><i data-lucide="folder-open" style="width:12px;height:12px;"></i> Tayyor Shablonlar</div>
+                            <h2>Loyihalar Markazi</h2>
+                            <p>Talabalar uchun mukammal loyiha va topshiriqlarni avtomatik tayyorlang.</p>
+                        </div>
+
+                        <div class="projects-grid">
+                            <div class="project-card" onclick="orderProject('Web App Loyihasi', 49999)">
+                                <div class="project-icon"><i data-lucide="monitor" style="width:22px;height:22px;"></i></div>
+                                <div class="project-details">
+                                    <h4>Web App / Sayt Yaratish</h4>
+                                    <p>HTML/CSS/JS yoki React loyihalar uchun to'liq kod strukturasi.</p>
+                                </div>
+                                <span class="project-price">49,999 so'm</span>
+                            </div>
+
+                            <div class="project-card" onclick="orderProject('Kurs Ishi Hujjati', 49999)">
+                                <div class="project-icon"><i data-lucide="file-text" style="width:22px;height:22px;"></i></div>
+                                <div class="project-details">
+                                    <h4>Kurs Ishi / Mustaqil Ish</h4>
+                                    <p>To'liq mundarija, kirish, 3 ta bob va xulosa matnlari.</p>
+                                </div>
+                                <span class="project-price">49,999 so'm</span>
+                            </div>
+
+                            <div class="project-card" onclick="orderProject('Taqdimot (PPTX)', 14999)">
+                                <div class="project-icon"><i data-lucide="presentation" style="width:22px;height:22px;"></i></div>
+                                <div class="project-details">
+                                    <h4>Taqdimot Slaydlari (PPTX)</h4>
+                                    <p>Slaydlar rejasi va ma'ruza matnlari shakllantirish.</p>
+                                </div>
+                                <span class="project-price">14,999 so'm</span>
+                            </div>
+
+                            <div class="project-card" onclick="orderProject('Telegram Bot Loyihasi', 35555)">
+                                <div class="project-icon"><i data-lucide="bot" style="width:22px;height:22px;"></i></div>
+                                <div class="project-details">
+                                    <h4>Telegram Bot kodi</h4>
+                                    <p>Python (Aiogram) yoki Node.js da bot arxitekturasi.</p>
+                                </div>
+                                <span class="project-price">35,555 so'm</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 3: Prompt Chatbot -->
+                    <section id="tab-prompt" class="tab-content">
+                        <div class="section-banner prompt-banner">
+                            <div class="banner-badge"><i data-lucide="brain-circuit" style="width:12px;height:12px;"></i> Neuroinson AI</div>
+                            <h2>Prompt & Matn Chatboti</h2>
+                            <p>Sifatli promptlar tuzing, insho va matnlarni professional darajada tahrirlang.</p>
+                        </div>
+
+                        <div class="quick-chips-row">
+                            <button class="quick-chip" onclick="useQuickPrompt('prompt', 'Flux AI uchun ultra-realistik 8k fotostudiya portreti promptini yozib ber')"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> Image Prompt</button>
+                            <button class="quick-chip" onclick="useQuickPrompt('prompt', 'Kino uslubidagi video generatsiyasi uchun batafsil inglizcha prompt tuzishda yordam ber')"><i data-lucide="clapperboard" style="width:14px;height:14px;"></i> Video Prompt</button>
+                            <button class="quick-chip" onclick="useQuickPrompt('prompt', 'Ushbu matnni imlo va uslubiy xatolarsiz professional darajada tahrirlab ber')"><i data-lucide="file-pen" style="width:14px;height:14px;"></i> Matn Tahrir</button>
+                        </div>
+
+                        <div class="chat-box" id="promptChat">
+                            <div class="message bot-message">
+                                <div class="msg-avatar"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></div>
+                                <div class="msg-content">
+                                    <p>Assalomu alaykum! Neuroinson prompt yordamchisiga xush kelibsiz. Rasm/video generatsiya uchun mukammal prompt tuzishda yoki istalgan matnli vazifada yordam beraman.</p>
+                                    <span class="msg-time">Hozir</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-wrapper floating-input-wrapper">
+                            <button class="input-action-btn" title="Fayl biriktirish" onclick="showToast('Fayl yuklash funksiyasi tez orada qo\'shiladi', 'info')"><i data-lucide="paperclip" style="width:18px;height:18px;"></i></button>
+                            <textarea id="promptInput" placeholder="Matn yoki prompt so'rovingizni kiriting..." onkeydown="handleKeyPress(event, 'prompt')" rows="1"></textarea>
+                            <button class="send-btn" onclick="sendMessage('prompt')"><i data-lucide="arrow-up" style="width:18px;height:18px;"></i></button>
+                        </div>
+                    </section>
+
+                    <!-- TAB 4: Rasm Generatsiya -->
+                    <section id="tab-image" class="tab-content">
+                        <div class="section-banner image-banner">
+                            <div class="banner-badge"><i data-lucide="image" style="width:12px;height:12px;"></i> Neuroinson Rasm</div>
+                            <h2>Rasm Generatsiyasi</h2>
+                            <p>O'zingiz xohlagan tasvirni yuqori aniqlikda yaratib oling.</p>
+                        </div>
+
+                        <div class="tariff-selector">
+                            <label class="tariff-card active" onclick="selectTariff(this, 'image', 499)">
+                                <input type="radio" name="imageTariff" checked>
+                                <div class="tariff-info">
+                                    <span class="tariff-name">Standard</span>
+                                    <span class="tariff-desc">Flux Schnell — Juda tezkor</span>
+                                </div>
+                                <span class="tariff-price">499 so'm</span>
+                            </label>
+                            <label class="tariff-card" onclick="selectTariff(this, 'image', 666)">
+                                <input type="radio" name="imageTariff">
+                                <div class="tariff-info">
+                                    <span class="tariff-name">Premium</span>
+                                    <span class="tariff-desc">Flux Schnell — Yuqori aniqlik</span>
+                                </div>
+                                <span class="tariff-price">666 so'm</span>
+                            </label>
+                            <label class="tariff-card" onclick="selectTariff(this, 'image', 1999)">
+                                <input type="radio" name="imageTariff">
+                                <div class="tariff-info">
+                                    <span class="tariff-name">Biznes</span>
+                                    <span class="tariff-desc">Flux Dev — Eng yuqori realizm, 4K</span>
+                                </div>
+                                <span class="tariff-price">1,999 so'm</span>
+                            </label>
+                        </div>
+
+                        <div class="generator-box">
+                            <textarea id="imagePromptInput" placeholder="Yaratmoqchi bo'lgan rasmingizni tasvirlang (masalan: Neon chiroqlari ostida kelajak Toshkent shahri, 4k resolution)..."></textarea>
+                            <div class="settings-row">
+                                <span class="settings-row-label"><i data-lucide="crop" style="width:14px;height:14px;"></i> Rasm O'lchami:</span>
+                                <select id="imageSize" class="settings-select">
+                                    <option value="1:1">Kvadrat (1:1)</option>
+                                    <option value="16:9">Keng ekran (16:9)</option>
+                                    <option value="9:16">Mobil ekran (9:16)</option>
+                                </select>
+                            </div>
+                            <button class="generate-btn" id="generateImgBtn" onclick="generateImage()">
+                                <i data-lucide="sparkles" style="width:18px;height:18px;"></i> Rasmni Yaratish (<span id="currentImgPrice">499</span> so'm)
+                            </button>
+                        </div>
+
+                        <div class="gallery-section">
+                            <h3><i data-lucide="clock-rewind" style="width:16px;height:16px;"></i> Oxirgi Yaratilgan Rasmlar</h3>
+                            <div class="image-grid" id="imageGallery">
+                                <div class="image-card-demo">
+                                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Generated Art">
+                                    <div class="image-overlay">
+                                        <span>Yuqori Sifatli • Premium</span>
+                                        <button onclick="downloadMedia(this)"><i data-lucide="download" style="width:14px;height:14px;"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 5: Video Generatsiya -->
+                    <section id="tab-video" class="tab-content">
+                        <div class="section-banner video-banner">
+                            <div class="banner-badge"><i data-lucide="video" style="width:12px;height:12px;"></i> Neuroinson Video</div>
+                            <h2>Video Generatsiyasi</h2>
+                            <p>Matnli tasviringizdan professional AI videolarni hosil qiling.</p>
+                        </div>
+
+                        <div class="tariff-selector">
+                            <label class="tariff-card active" onclick="selectTariff(this, 'video', 3333)">
+                                <input type="radio" name="videoTariff" checked>
+                                <div class="tariff-info">
+                                    <span class="tariff-name">Standard</span>
+                                    <span class="tariff-desc">Kling 2.5 Turbo — Ovozli video (5 soniya)</span>
+                                </div>
+                                <span class="tariff-price">3,333 so'm</span>
+                            </label>
+                            <label class="tariff-card" onclick="selectTariff(this, 'video', 7777)">
+                                <input type="radio" name="videoTariff">
+                                <div class="tariff-info">
+                                    <span class="tariff-name">Premium</span>
+                                    <span class="tariff-desc">Kling 2.6 Pro — Cinematic, ovozli (5 soniya)</span>
+                                </div>
+                                <span class="tariff-price">7,777 so'm</span>
+                            </label>
+                            <label class="tariff-card" onclick="selectTariff(this, 'video', 14999)">
+                                <input type="radio" name="videoTariff">
+                                <div class="tariff-info">
+                                    <span class="tariff-name">Biznes</span>
+                                    <span class="tariff-desc">Kling 3.0 Standard — Realizm va ovoz (5 soniya)</span>
+                                </div>
+                                <span class="tariff-price">14,999 so'm</span>
+                            </label>
+                        </div>
+
+                        <div class="generator-box">
+                            <textarea id="videoPromptInput" placeholder="Videoda nimalar sodir bo'lishini yozing (masalan: Koinotda uchayotgan kosmonavt, sekin harakatlanuvchi kameralar)..."></textarea>
+                            <div class="settings-row">
+                                <span class="settings-row-label"><i data-lucide="crop" style="width:14px;height:14px;"></i> Video O'lchami:</span>
+                                <select id="videoSize" class="settings-select">
+                                    <option value="16:9">Keng ekran (16:9)</option>
+                                    <option value="9:16">Mobil ekran (9:16)</option>
+                                    <option value="1:1">Kvadrat (1:1)</option>
+                                </select>
+                            </div>
+                            <button class="generate-btn video-gen-btn" id="generateVidBtn" onclick="generateVideo()">
+                                <i data-lucide="clapperboard" style="width:18px;height:18px;"></i> Videoni Yaratish (<span id="currentVidPrice">3333</span> so'm)
+                            </button>
+                        </div>
+
+                        <div class="gallery-section">
+                            <h3><i data-lucide="clock-rewind" style="width:16px;height:16px;"></i> Oxirgi Yaratilgan Videolar</h3>
+                            <div class="video-grid" id="videoGallery">
+                                <div class="video-card-demo">
+                                    <div class="video-placeholder">
+                                        <i data-lucide="play-circle" class="play-icon" style="width:32px;height:32px;"></i>
+                                        <span>Kling 1.5 • Premium Demo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- TAB 6: Loyiha Chat -->
+                    <section id="tab-project-chat" class="tab-content">
+                        <div class="section-banner project-chat-banner">
+                            <div class="banner-badge"><i data-lucide="key" style="width:12px;height:12px;"></i> Premium Loyiha AI</div>
+                            <h2>Loyiha Muharriri AI</h2>
+                            <p>Sotib olgan loyihangiz ustida professional AI bilan birga ishlang (kod/matn cheklovlarsiz).</p>
+                        </div>
+
+                        <div class="chat-box" id="project-chatChat">
+                            <div class="message bot-message">
+                                <div class="msg-avatar"><i data-lucide="file-code" style="width:16px;height:16px;"></i></div>
+                                <div class="msg-content">
+                                    <p>Assalomu alaykum! Loyihangiz muvaffaqiyatli sotib olindi. Men sizga ushbu loyihani eng professional darajada yakunlashda yordam beruvchi maxsus Loyiha AI yordamchisiman. Dasturlash kodlari, diplom yozish yoki kurs ishlari bo'yicha qanday buyruq bermoqchisiz? Boshlaymizmi?</p>
+                                    <span class="msg-time">Hozir</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-wrapper floating-input-wrapper">
+                            <button class="input-action-btn" title="Fayl biriktirish" onclick="showToast('Fayl yuklash funksiyasi tez orada qo\'shiladi', 'info')"><i data-lucide="paperclip" style="width:18px;height:18px;"></i></button>
+                            <textarea id="project-chatInput" placeholder="Loyiha bo'yicha buyruq bering..." onkeydown="handleKeyPress(event, 'project-chat')" rows="1"></textarea>
+                            <button class="send-btn" onclick="sendMessage('project-chat')"><i data-lucide="arrow-up" style="width:18px;height:18px;"></i></button>
+                        </div>
+                    </section>
+
+                    <!-- TAB 7: Admin Panel -->
+                    <section id="tab-admin" class="tab-content">
+                        <div class="section-banner admin-banner">
+                            <div class="banner-badge"><i data-lucide="lock" style="width:12px;height:12px;"></i> Admin Control</div>
+                            <h2>Admin Panel</h2>
+                            <p>Neuroinson AI foydalanuvchilarini, balanslarini va xabar tarqatishni boshqaring.</p>
+                        </div>
+
+                        <div class="admin-filter-group">
+                            <button class="admin-filter-btn active" id="filter-today" onclick="setAdminPeriod('today')">Bugun</button>
+                            <button class="admin-filter-btn" id="filter-week" onclick="setAdminPeriod('week')">Hafta</button>
+                            <button class="admin-filter-btn" id="filter-month" onclick="setAdminPeriod('month')">Bu oy</button>
+                            <button class="admin-filter-btn" id="filter-year" onclick="setAdminPeriod('year')">Yil</button>
+                            <button class="admin-filter-btn" id="filter-all" onclick="setAdminPeriod('all')">Hammasi</button>
+                        </div>
+
+                        <div class="admin-grid">
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-icon blue"><i data-lucide="users" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">Jami Foydalanuvchilar</div>
+                                    <h3 class="admin-stat-value" id="admin-total-users">0</h3>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-icon indigo"><i data-lucide="user-plus" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">Yangi (davr)</div>
+                                    <h3 class="admin-stat-value" id="admin-new-users">0</h3>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-icon green"><i data-lucide="wallet" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">Jami Balans</div>
+                                    <h3 class="admin-stat-value" id="admin-total-balance">0 so'm</h3>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-icon blue"><i data-lucide="trending-up" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">MRR (Bu oy)</div>
+                                    <h3 class="admin-stat-value" id="admin-mrr">0 so'm</h3>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-icon green"><i data-lucide="hand-coins" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">Kirim (davr)</div>
+                                    <h3 class="admin-stat-value" id="admin-total-topups">0 so'm</h3>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-icon rose"><i data-lucide="minus-circle" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">Platform Xarajat (davr)</div>
+                                    <h3 class="admin-stat-value" id="admin-period-expenses">0 so'm</h3>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card profit-card">
+                                <div class="admin-stat-icon profit"><i data-lucide="wallet" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">Sof Foyda (davr)</div>
+                                    <h3 class="admin-stat-value" id="admin-net-profit">0 so'm</h3>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="admin-stat-icon amber"><i data-lucide="pie-chart" style="width:20px;height:20px;"></i></div>
+                                <div>
+                                    <div class="admin-stat-label">User Sarfi (davr)</div>
+                                    <h3 class="admin-stat-value" id="admin-total-spent">0 so'm</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-section-card">
+                            <h3 class="admin-section-title"><i data-lucide="bar-chart-3" style="width:16px;height:16px;color:var(--accent-blue);"></i> AI API Foydalanish Statistikasi</h3>
+                            <div class="admin-usage-header">
+                                <span style="font-size:12px;color:var(--text-tertiary);">So'nggi <select id="usageDays" onchange="loadAdminUsage()" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);border-radius:6px;padding:2px 8px;font-size:12px;"><option value="7">7 kun</option><option value="30">30 kun</option><option value="90">90 kun</option></select> ichida</span>
+                                <strong id="adminTotalCalls" style="color:var(--accent-blue);">0</strong> ta API chaqiruv
+                            </div>
+                            <div class="admin-charts-row">
+                                <div class="admin-chart-card">
+                                    <canvas id="apiUsagePieChart" height="200"></canvas>
+                                </div>
+                                <div class="admin-chart-card">
+                                    <canvas id="apiUsageBarChart" height="200"></canvas>
+                                </div>
+                            </div>
+                            <div class="admin-usage-list" id="adminUsageList">
+                                <div class="empty-state">Ma'lumot yuklanmoqda...</div>
+                            </div>
+                        </div>
+
+                        <div class="admin-section-card">
+                            <h3 class="admin-section-title"><i data-lucide="megaphone" style="width:16px;height:16px;color:var(--accent-rose);"></i> Barcha foydalanuvchilarga xabar yuborish (E'lon)</h3>
+                            <textarea id="broadcastInput" class="admin-input" placeholder="Xabaringizni yozing (HTML teglari qo'llab-quvvatlanadi)..." style="height:80px;resize:none;width:100%;margin-bottom:12px;"></textarea>
+                            <button class="admin-btn-danger" onclick="sendBroadcast()"><i data-lucide="send" style="width:16px;height:16px;"></i> Xabarni tarqatish</button>
+                        </div>
+
+                        <div class="admin-section-card">
+                            <h3 class="admin-section-title"><i data-lucide="settings-2" style="width:16px;height:16px;color:var(--accent-blue);"></i> Foydalanuvchilarni Boshqarish</h3>
+                            <div class="admin-search-row">
+                                <input type="text" id="adminSearchInput" class="admin-input" placeholder="ID yoki Username bo'yicha qidirish...">
+                                <button class="admin-btn-primary" onclick="loadAdminStats()"><i data-lucide="search" style="width:16px;height:16px;"></i> Qidirish</button>
+                            </div>
+                            <div class="admin-table-wrapper">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Usul</th>
+                                            <th>Balans</th>
+                                            <th>Sana</th>
+                                            <th>Holat</th>
+                                            <th style="text-align:right;">Amallar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminUserTableBody">
+                                        <tr><td colspan="8" class="empty-state">Qidirilmoqda...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="admin-section-card">
+                            <h3 class="admin-section-title"><i data-lucide="clock-rewind" style="width:16px;height:16px;color:var(--accent-green);"></i> Oxirgi To'lovlar (Kirimlar)</h3>
+                            <div class="admin-list-container">
+                                <div id="adminRecentTopupsList">
+                                    <div class="empty-state">Yuklanmoqda...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-section-card">
+                            <h3 class="admin-section-title"><i data-lucide="calculator" style="width:16px;height:16px;color:var(--accent-rose);"></i> Platforma Xarajatlari Boshqaruvi</h3>
+                            <p class="admin-section-subtitle">Google Studio API Key, Fal.ai, VPS server kabi oylik operatsion xarajatlarni qo'shing va nazorat qiling.</p>
+                            <div class="admin-expense-form">
+                                <div class="admin-expense-inputs">
+                                    <input type="text" id="expenseNameInput" class="admin-input" placeholder="Xarajat nomi (masalan: Google API Key, VPS, Fal.ai)" style="flex:2;">
+                                    <input type="number" id="expenseAmountInput" class="admin-input" placeholder="Summa (so'm)" style="flex:1;">
+                                </div>
+                                <button class="admin-btn-danger" onclick="addPlatformExpense()"><i data-lucide="plus" style="width:16px;height:16px;"></i> Xarajatni qo'shish</button>
+                            </div>
+                            <h4 class="admin-section-title" style="font-size:13px;margin-bottom:10px;"><i data-lucide="list-checks" style="width:14px;height:14px;color:var(--accent-blue);"></i> Kiritilgan Xarajatlar Ro'yxati</h4>
+                            <div class="admin-list-container">
+                                <div id="adminExpensesList">
+                                    <div class="empty-state">Hozircha xarajatlar kiritilmagan.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Transaction History -->
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i data-lucide="clock-rewind" style="width:18px;height:18px;"></i> Tranzaksiya Tarixi</h3>
+                <button class="close-modal-btn" onclick="closeHistoryModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="transactionList" style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="text-align:center;color:var(--text-tertiary);padding:20px;">✦ Yuklanmoqda...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Top-up -->
+    <div class="modal-overlay" id="topupModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i data-lucide="wallet" style="width:18px;height:18px;"></i> Hisobni To'ldirish (P2P)</h3>
+                <button class="close-modal-btn" onclick="closeTopupModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="topupSelectionBox">
+                    <p class="modal-subtitle">To'lov miqdorini tanlang va kartaga o'tkazma qiling. Tizim to'lovni avtomatik tasdiqlaydi:</p>
+                    <div class="topup-amount-grid">
+                        <button class="topup-amount-btn" onclick="generateInvoice(10000)">+10,000</button>
+                        <button class="topup-amount-btn" onclick="generateInvoice(25000)">+25,000</button>
+                        <button class="topup-amount-btn" onclick="generateInvoice(50000)">+50,000</button>
+                    </div>
+                    <div class="topup-custom-box">
+                        <label class="topup-label"><i data-lucide="dollar-sign" style="width:14px;height:14px;"></i> Yoki boshqa miqdorni kiriting (so'mda):</label>
+                        <div class="topup-input-row">
+                            <input type="number" id="customAmountInput" class="topup-input" placeholder="Masalan: 5000">
+                            <button class="admin-btn-success" onclick="submitCustomInvoice()">Hisob yaratish</button>
+                        </div>
+                    </div>
+                    <div class="instructions">
+                        <h4><i data-lucide="list-checks" style="width:14px;height:14px;"></i> Muhim ko'rsatma:</h4>
+                        <ol>
+                            <li>Hisobni to'ldirish uchun yuqoridagi summalardan birini tanlang.</li>
+                            <li>Yaratilgan <b>unikal summani</b> (tiyinlarigacha aniq qilib) ko'rsatilgan kartaga o'tkazing.</li>
+                            <li>To'lov amalga oshirilgach, hisobingiz 1 daqiqa ichida avtomatik ravishda to'ldiriladi!</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="card-details-box" id="paymentDetails" style="display:none;">
+                    <span class="topup-label">To'lashingiz kerak bo'lgan aniq summa:</span>
+                    <div class="payment-amount-display">
+                        <h2 id="uniqueAmount" class="payment-amount-value">10 012 so'm</h2>
+                        <button class="payment-copy-btn" onclick="copyAmountNumber()"><i data-lucide="copy" style="width:14px;height:14px;"></i> Nusxalash</button>
+                    </div>
+                    <span class="topup-label">Karta raqami:</span>
+                    <div class="payment-card-row">
+                        <strong id="cardNumber" class="payment-card-number">9860 1201 4794 6905</strong>
+                        <button class="admin-btn-success" onclick="copyCardNumber()" style="padding:6px 12px;font-size:12px;"><i data-lucide="copy" style="width:14px;height:14px;"></i> Nusxalash</button>
+                    </div>
+                    <span class="payment-card-owner card-owner">Ega: Sobirjanov Asadbek</span>
+                    <div id="uniqueMsg" class="payment-notice">Kutilmoqda...</div>
+                    <button class="payment-back-btn" onclick="resetTopupModal()"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Orqaga qaytish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Deploy -->
+    <div class="modal-overlay" id="deployModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i data-lucide="server" style="width:18px;height:18px;"></i> VPS Serverga Avtomatik Joylash</h3>
+                <button class="close-modal-btn" onclick="closeDeployModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-subtitle">Ushbu dastur/kodni telefoningiz orqali to'g'ridan-to'g'ri o'zingizning shaxsiy VPS serveringizga 1-klikda joylashtiring:</p>
+                <input type="hidden" id="deployCodeInput">
+                <div class="deploy-form-group">
+                    <label class="deploy-label">Loyiha turi:</label>
+                    <select id="deployType" class="deploy-select">
+                        <option value="python-bot">Telegram Bot (Python Service 24/7)</option>
+                        <option value="html-site">Veb-sayt (HTML Apache Server)</option>
+                    </select>
+                </div>
+                <div class="deploy-form-group">
+                    <label class="deploy-label">Server IP manzili (IP Address):</label>
+                    <input type="text" id="deployIp" class="deploy-input" placeholder="Masalan: 206.189.61.55">
+                </div>
+                <div class="deploy-form-group">
+                    <label class="deploy-label">Server Root paroli (SSH Password):</label>
+                    <input type="password" id="deployPassword" class="deploy-input" placeholder="VPS parolini kiriting">
+                </div>
+                <button id="deploySubmitBtn" class="deploy-submit-btn" onclick="submitDeployment()">
+                    <i data-lucide="cloud-upload" style="width:18px;height:18px;"></i> Serverga Joylash (Deploy)
+                </button>
+                <div id="deployStatus" class="deploy-status" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Admin Edit User -->
+    <div class="modal-overlay" id="adminEditUserModal" onclick="if(event.target===this) closeAdminEditUserModal()">
+        <div class="modal-card" style="max-width:480px; width:95%;">
+            <div class="modal-header">
+                <h3><i data-lucide="user-cog" style="width:18px;height:18px;color:var(--accent-start);"></i> Foydalanuvchini tahrirlash</h3>
+                <button class="close-modal-btn" onclick="closeAdminEditUserModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+                <div id="adminEditUserHeader" style="font-size:12px; color:var(--text-tertiary); padding:10px 14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>ID: <b id="adminEditUserId" style="color:var(--text-primary);">--</b></span>
+                    <span id="adminEditAuthBadge"></span>
+                </div>
+                
+                <div id="adminEditErrorMsg" style="display:none; color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); padding:10px 14px; border-radius:10px; font-size:12px; font-weight:500;"></div>
+
+                <div>
+                    <label class="topup-label" style="display:block; margin-bottom:6px; font-size:12px; font-weight:600;">Foydalanuvchi nomi (Username):</label>
+                    <input type="text" id="adminEditUsernameInput" class="admin-input" placeholder="Username..." style="width:100%;">
+                </div>
+                <div>
+                    <label class="topup-label" style="display:block; margin-bottom:6px; font-size:12px; font-weight:600;">Email manzili:</label>
+                    <input type="email" id="adminEditEmailInput" class="admin-input" placeholder="email@example.com..." style="width:100%;">
+                </div>
+                <div>
+                    <label class="topup-label" style="display:block; margin-bottom:6px; font-size:12px; font-weight:600;">Balans (so'm):</label>
+                    <input type="number" id="adminEditBalanceInput" class="admin-input" placeholder="Balans miqdori..." style="width:100%;">
+                </div>
+                <div>
+                    <label class="topup-label" style="display:block; margin-bottom:6px; font-size:12px; font-weight:600;">Holati:</label>
+                    <select id="adminEditStatusSelect" class="admin-input" style="width:100%; cursor:pointer; background:var(--bg-card); color:var(--text-primary);">
+                        <option value="active">🟢 Faol (Active)</option>
+                        <option value="warned">🟡 Ogohlantirilgan (Warned)</option>
+                        <option value="blocked">🔴 Bloklangan (Blocked)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="confirm-actions">
+                    <button class="confirm-btn primary" onclick="saveAdminUserEdit()">Saqlash</button>
+                    <button class="confirm-btn secondary" onclick="closeAdminEditUserModal()">Bekor qilish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginModalOverlay" onclick="closeLoginModal()" style="display:none;"></div>
+    <div class="login-modal" id="loginModal" style="display:none;">
+        <button class="login-modal-close" onclick="closeLoginModal()">
+            <i data-lucide="x" style="width:18px;height:18px;"></i>
+        </button>
+        <div class="login-modal-icon">
+            <i data-lucide="brain" style="width:32px;height:32px;"></i>
+        </div>
+
+        <!-- Step 1: Email entry -->
+        <div id="loginStep1">
+            <h2 class="login-modal-title">Neuroinson AI ga xush kelibsiz</h2>
+            <p class="login-modal-subtitle">Davom etish uchun emailingizni kiriting</p>
+            <div class="login-modal-body">
+                <div class="login-input-group">
+                    <label for="loginEmailInput">Email pochtangiz</label>
+                    <div class="login-input-wrap">
+                        <i data-lucide="mail" style="width:16px;height:16px;"></i>
+                        <input type="email" id="loginEmailInput" placeholder="user@gmail.com" autocomplete="email" onkeydown="if(event.key==='Enter')sendOtp()">
+                    </div>
+                    <p id="loginEmailError" class="login-field-error" style="display:none;"></p>
+                </div>
+                <button class="login-submit-btn" id="sendOtpBtn" onclick="sendOtp()">
+                    <i data-lucide="mail" style="width:16px;height:16px;"></i>
+                    <span>6-xonali kodni yuborish</span>
+                </button>
+                <div class="login-divider">
+                    <span>yoki</span>
+                </div>
+                <button class="login-google-btn" id="googleSignInBtn">
+                    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.14.76-4.59l-7.98-6.19A23.99 23.99 0 0 0 0 24c0 3.77.87 7.35 2.56 10.56l7.97-5.97z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 5.97C6.51 42.62 14.62 48 24 48z"/></svg>
+                    <span>Google bilan kirish</span>
+                </button>
+            </div>
+            <p class="login-modal-footer">
+                Davom etish orqali siz <a href="#" onclick="return false;">Foydalanish shartlari</a> va <a href="#" onclick="return false;">Maxfiylik siyosati</a>ga rozilik bildirasiz
+            </p>
+        </div>
+
+        <!-- Step 2: OTP input -->
+        <div id="loginStep2" style="display:none;">
+            <h2 class="login-modal-title">Kodni kiriting</h2>
+            <p class="login-modal-subtitle" id="otpSentToLabel">6 xonali kod <span id="otpEmailDisplay"></span> ga yuborildi</p>
+            <div class="login-modal-body">
+                <div class="otp-input-row" id="otpInputRow">
+                    <input type="text" class="otp-box" id="otp1" maxlength="1" inputmode="numeric" autocomplete="one-time-code" oninput="otpInput(this, 1)">
+                    <input type="text" class="otp-box" id="otp2" maxlength="1" inputmode="numeric" oninput="otpInput(this, 2)">
+                    <input type="text" class="otp-box" id="otp3" maxlength="1" inputmode="numeric" oninput="otpInput(this, 3)">
+                    <input type="text" class="otp-box" id="otp4" maxlength="1" inputmode="numeric" oninput="otpInput(this, 4)">
+                    <input type="text" class="otp-box" id="otp5" maxlength="1" inputmode="numeric" oninput="otpInput(this, 5)">
+                    <input type="text" class="otp-box" id="otp6" maxlength="1" inputmode="numeric" oninput="otpInput(this, 6)">
+                </div>
+                <p id="otpError" class="login-field-error" style="display:none;"></p>
+                <button class="login-submit-btn" id="verifyOtpBtn" onclick="verifyOtp()">
+                    <i data-lucide="log-in" style="width:16px;height:16px;"></i>
+                    <span>Tasdiqlash</span>
+                </button>
+                <div class="otp-resend-row">
+                    <button class="otp-resend-btn" id="resendOtpBtn" onclick="resendOtp()" disabled>
+                        <span>Kodni qayta yuborish</span>
+                        <span id="resendCountdown">60</span>
+                    </button>
+                    <button class="otp-back-btn" onclick="backToEmail()">
+                        <i data-lucide="arrow-left" style="width:14px;height:14px;"></i>
+                        <span>Emailni o'zgartirish</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=60"></script>
+</body>
+</html>

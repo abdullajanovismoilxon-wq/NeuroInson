@@ -1,0 +1,23 @@
+# Neuroinson AI - Xavfsizlik sozlamalari
+# database.db va config.json fayllariga to'g'ridan-to'g'ri kirish taqiqlanadi
+
+<Files "database.db">
+    Order deny,allow
+    Deny from all
+</Files>
+
+<Files "config.json">
+    Order deny,allow
+    Deny from all
+</Files>
+
+<FilesMatch "\.(db|sqlite|sqlite3|json|log|py|sh|bak)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# PHP fayllariga faqat GET/POST ruxsat (OPTIONS bloklash)
+<LimitExcept GET POST>
+    Order deny,allow
+    Deny from all
+</LimitExcept>

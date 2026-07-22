@@ -1,0 +1,13 @@
+.env
+.env.*
+config.json
+api/config.json
+database.db
+*.db
+__pycache__/
+*.pyc
+output/
+generated_files/
+logs/
+*.log
+node_modules/
